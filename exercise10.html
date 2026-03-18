@@ -1,36 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-Hant">
 <head>
-    <title>Code Example Page</title>
+    <meta charset="UTF-8">
+    <title>HTML Computercode 練習</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .code-container {
-            border: 2px solid black;
-            padding: 15px;
+        /* 建立圖片中的外框與陰影效果 */
+        .code-box {
+            border: 1px solid #000;
+            padding: 20px;
             width: fit-content;
-            box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
+            margin: 20px;
+            box-shadow: 8px 8px 5px #888888;
+            font-family: Arial, sans-serif;
         }
-        pre {
+
+        /* 程式碼字型設定 */
+        code {
             font-family: "Courier New", Courier, monospace;
-            margin-top: 20px;
+            font-size: 1.1em;
         }
     </style>
 </head>
 <body>
 
-    <div class="code-container">
-        <h2>Code example:</h2>
+    <div class="code-box">
+        <p>Code example:</p>
 
-        <pre>
-var person = {
+        <pre><code>var person = {
     firstName: "昱翔",
     lastName : "陳",
     studentId: "113403516"
-}
-        </pre>
+}</code></pre>
     </div>
 
 </body>
