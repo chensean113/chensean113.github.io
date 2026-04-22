@@ -3,223 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Layout - Mobile First</title>
+    <title>Responsive Layout Practice</title>
     <style>
-        /* --- 全局與背景設定 --- */
+        /* 基本頁面樣式：模擬圖片中的藍色背景 */
         body {
-            background-color: #4faeed; /* 藍色背景 */
+            background-color: #64b5f6;
             margin: 0;
             padding: 20px;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            box-sizing: border-box;
+            flex-wrap: wrap; /* 加入這行：當畫面寬度不夠時，允許卡片自動換到下一行 */
+            gap: 30px;       /* 加入這行：設定卡片之間的間距為 30px，避免黏在一起 */
+            font-family: Arial, sans-serif;
         }
 
-        /* --- 白色主容器 --- */
-        .container {
+        /* 白色主卡片容器 */
+        .card {
             background-color: #ffffff;
             width: 100%;
             max-width: 600px;
-            padding: 12px;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px; /* 統一設定所有區塊的間距 */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        /* 讓所有內部區塊都有圓角 */
-        .container > div > div, .header {
+        /* 區塊共通樣式 */
+        .block {
             border-radius: 4px;
+            min-height: 50px;
         }
 
-        /* 1. 頂部綠色區塊 (固定樣式) */
+        /* 頂部綠色區塊 (Header) */
         .header {
-            background-color: #a0ce4e;
-            height: 120px;
+            background-color: #aed581;
+            height: 100px;
             width: 100%;
+            margin-bottom: 15px;
         }
 
-        /* ==========================================
-           【預設樣式：手機版 (小於 480px) - 圖片 (a)】
-           ========================================== */
-        
-        /* 2. 中間藍色區塊：預設為直排 1 欄 */
-        .middle-section {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
+        /* 中間藍色區塊區域 */
+        .middle-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
         }
-        .middle-section div {
+
+        .middle-block {
             background-color: #00bcd4;
-            height: 50px;
+            flex: 1; /* 平分寬度 */
+            height: 120px;
         }
 
-        /* 3. 底部灰色區塊：預設為 2x2 網格 */
-        .bottom-section {
+        /* 底部灰色區塊區域 */
+        .bottom-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 10px;
         }
-        .bottom-section div {
-            background-color: #e8eaed;
-            height: 50px;
+
+        .bottom-block {
+            background-color: #eceff1;
+            height: 40px;
         }
 
         /* ==========================================
-           【Media Query：大螢幕 (大於等於 480px) - 圖片 (b)】
+           響應式佈局設定 (Media Queries)
            ========================================== */
-        @media (min-width: 480px) {
-            
-            /* 中間藍色區塊變為 3 欄，並增加高度 */
-            .middle-section {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            .middle-section div {
-                height: 140px;
+
+        /* 預設狀態 (b)：大螢幕 (螢幕寬度 >= 480px) */
+        .bottom-container {
+            grid-template-columns: repeat(4, 1fr); /* 4 欄並排 */
+        }
+
+        /* 狀態 (a)：小螢幕 (當寬度小於 480px 時) */
+        @media (max-width: 479px) {
+            /* 中間區塊改為直排 */
+            .middle-container {
+                flex-direction: column;
             }
 
-            /* 底部灰色區塊變為 4 欄 */
-            .bottom-section {
-                grid-template-columns: repeat(4, 1fr);
+            .middle-block {
+                height: 60px; /* 直排時縮小高度 */
+            }
+
+            /* 底部區塊改為 2x2 網格 */
+            .bottom-container {
+                grid-template-columns: repeat(2, 1fr); /* 2 欄 */
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- 頂部區塊 -->
-        <div class="header"></div>
+    <div class="card">
+        <!-- 頂部綠色區塊 -->
+        <div class="header block"></div>
 
-        <!-- 中間區塊 -->
-        <div class="middle-section">
-            <div></div>
-            <div></div>
-            <div></div>
+        <!-- 中間三個藍色區塊 -->
+        <div class="middle-container">
+            <div class="middle-block block"></div>
+            <div class="middle-block block"></div>
+            <div class="middle-block block"></div>
         </div>
 
-        <!-- 底部區塊 -->
-        <div class="bottom-section">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Layout - Mobile First</title>
-    <style>
-        /* --- 全局與背景設定 --- */
-        body {
-            background-color: #4faeed; /* 藍色背景 */
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
-
-        /* --- 白色主容器 --- */
-        .container {
-            background-color: #ffffff;
-            width: 100%;
-            max-width: 600px;
-            padding: 12px;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px; /* 統一設定所有區塊的間距 */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        /* 讓所有內部區塊都有圓角 */
-        .container > div > div, .header {
-            border-radius: 4px;
-        }
-
-        /* 1. 頂部綠色區塊 (固定樣式) */
-        .header {
-            background-color: #a0ce4e;
-            height: 120px;
-            width: 100%;
-        }
-
-        /* ==========================================
-           【預設樣式：手機版 (小於 480px) - 圖片 (a)】
-           ========================================== */
-        
-        /* 2. 中間藍色區塊：預設為直排 1 欄 */
-        .middle-section {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-        .middle-section div {
-            background-color: #00bcd4;
-            height: 50px;
-        }
-
-        /* 3. 底部灰色區塊：預設為 2x2 網格 */
-        .bottom-section {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-        .bottom-section div {
-            background-color: #e8eaed;
-            height: 50px;
-        }
-
-        /* ==========================================
-           【Media Query：大螢幕 (大於等於 480px) - 圖片 (b)】
-           ========================================== */
-        @media (min-width: 480px) {
-            
-            /* 中間藍色區塊變為 3 欄，並增加高度 */
-            .middle-section {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            .middle-section div {
-                height: 140px;
-            }
-
-            /* 底部灰色區塊變為 4 欄 */
-            .bottom-section {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <!-- 頂部區塊 -->
-        <div class="header"></div>
-
-        <!-- 中間區塊 -->
-        <div class="middle-section">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-
-        <!-- 底部區塊 -->
-        <div class="bottom-section">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+        <!-- 底部四個灰色區塊 -->
+        <div class="bottom-container">
+            <div class="bottom-block block"></div>
+            <div class="bottom-block block"></div>
+            <div class="bottom-block block"></div>
+            <div class="bottom-block block"></div>
         </div>
     </div>
 
