@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Preview UI</title>
+    
+    <!-- Import Roboto Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 全局重置與基本設定 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e5e5e5; /* 讓白色 UI 面板更凸顯的背景色 */
+            font-family: 'Roboto', sans-serif;
+            font-size: 13px;
+            color: #2f2f2f;
+        }
+
+        /* --- 主容器佈局 --- */
+        .app-container {
+            display: flex;
+            width: 850px;
+            height: 500px;
+            background-color: #ffffff;
+            border: 1px solid #dcdcdc;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* ==================== 左側檔案列表 ==================== */
+        .left-panel {
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #eaeaea;
+        }
+
+        .left-header {
+            height: 35px;
+            background-color: #f6f6f6;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .left-header span {
+            margin-left: 12px;
+            flex: 1;
+        }
+
+        /* 模擬設計稿中的排序 Icon */
+        .sort-icon {
+            width: 16px;
+            height: 16px;
+            background-color: #9370db;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        .sort-icon::before {
+            content: '↓';
+        }
+
+        .list-content {
+            flex: 1;
+            overflow-y: auto;
+            background-color: #ffffff;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            height: 30px;
+            padding: 0 12px;
+            border-bottom: 1px solid #eaeaea;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* 檔案名稱文字 */
+        .list-item span {
+            margin-left: 12px;
+        }
+
+        /* 選取狀態 */
+        .list-item.selected {
+            background-color: #e8f3ff;
+            border-top: 1px solid #cfddff;
+            border-bottom: 1px solid #cfddff;
+            margin-top: -1px; /* 修正相鄰框線重疊問題 */
+        }
+
+        /* 第一個 selected 不需要 margin-top 修正 */
+        .list-item:first-child.selected {
+            margin-top: 0;
+            border-top: none;
+        }
+
+        .left-footer {
+            height: 30px;
+            background-color: #f3f3f3;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            border-top: 1px solid #eaeaea;
+        }
+
+        .highlight-num {
+            color: #0084ff;
+            margin: 0 3px;
+        }
+
+        /* ==================== 右側預覽區 ==================== */
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+        }
+
+        .right-header {
+            height: 35px;
+            background-color: #f6f6f6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 18px 0 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        /* 依照設計稿的按鈕 (h22 / R8) */
+        .btn-view-info {
+            height: 22px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            border: 1px solid #2f2f2f;
+            padding: 0 18px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 13px;
+            color: #2f2f2f;
+            cursor: pointer;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .btn-view-info:hover { background-color: #f9f9f9; }
+        .btn-view-info:active { background-color: #eeeeee; }
+
+        .preview-area {
+            flex: 1;
+            padding: 20px 26px 20px 20px; /* 依照設計稿左右間距 (左20, 右26) */
+            overflow-y: auto; /* 允許滾動 */
+        }
+
+        /* 模擬圖片顯示 */
+        .image-container {
+            width: 100%;
+            /* 使用一個接近設計稿的落日風景圖做預覽 */
+            background-image: url('https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?q=80&w=1000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            height: 260px;
+            border-radius: 2px;
+        }
+
+        /* ==================== 展開資訊區塊 ==================== */
+        .info-panel {
+            margin-top: 10px;
+            color: #707070;
+            overflow: hidden;
+            max-height: 0; /* 預設收合 */
+            opacity: 0;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+        }
+
+        .info-panel.expanded {
+            max-height: 200px; /* 足夠顯示內容的高度 */
+            opacity: 1;
+        }
+
+        .info-row {
+            margin-bottom: 6px;
+            display: flex;
+            line-height: 1.4;
+        }
+
+        .info-row:first-child {
+            margin-top: 10px; /* Min 10 Spec */
+        }
+
+        /* 模擬打字區域的高亮背景 (僅為了展示設計稿中的區塊感，實際上通常是透明的) */
+        .info-highlight {
+            background-color: rgba(144, 238, 144, 0.2); /* 淡淡的綠色模擬紅線圖標示 */
+            padding: 2px 4px;
+            border-radius: 2px;
+            margin-left: -4px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- 左側面板：檔案清單 -->
+        <div class="left-panel">
+            <div class="left-header">
+                <input type="checkbox" id="check-all">
+                <span>名稱</span>
+                <div class="sort-icon"></div>
+            </div>
+            
+            <div class="list-content" id="file-list">
+                <!-- 透過 JS 動態產生清單，第一項預設選取 -->
+                <div class="list-item selected">
+                    <input type="checkbox" checked>
+                    <span>20171012_1.jpg</span>
+                </div>
+            </div>
+
+            <div class="left-footer">
+                數量 : <span class="highlight-num" id="selected-count">1</span> / 100
+            </div>
+        </div>
+
+        <!-- 右側面板：圖片預覽與資訊 -->
+        <div class="right-panel">
+            <div class="right-header">
+                <span>預覽</span>
+                <button class="btn-view-info" id="toggle-info-btn">查看資訊</button>
+            </div>
+            
+            <div class="preview-area">
+                <div class="image-container"></div>
+                
+                <!-- 隱藏的資訊面板 -->
+                <div class="info-panel" id="info-panel">
+                    <div class="info-row">修改日期 : 2017/10/12</div>
+                    <div class="info-row">類別 : JPG</div>
+                    <div class="info-row">大小 : 456.97KB</div>
+                    <div class="info-row">
+                        路徑 : \\designcenter.qnap.com.tw\DesignCenter\PM、RD 請進入\WEB\Stations\A_Image2PDF\v2\sample
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. 處理展開/收起資訊的互動
+        const btnToggleInfo = document.getElementById('toggle-info-btn');
+        const infoPanel = document.getElementById('info-panel');
+        let isInfoExpanded = false;
+
+        btnToggleInfo.addEventListener('click', () => {
+            isInfoExpanded = !isInfoExpanded;
+            if (isInfoExpanded) {
+                infoPanel.classList.add('expanded');
+                btnToggleInfo.textContent = '收起資訊';
+            } else {
+                infoPanel.classList.remove('expanded');
+                btnToggleInfo.textContent = '查看資訊';
+            }
+        });
+
+        // 2. 處理左側檔案清單的選取互動
+        const listItems = document.querySelectorAll('.list-item');
+        const countDisplay = document.getElementById('selected-count');
+
+        function updateSelectedCount() {
+            const selectedItems = document.querySelectorAll('.list-item.selected');
+            countDisplay.textContent = selectedItems.length;
+        }
+
+        listItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                // 如果點擊的不是 checkbox 本身，則手動切換 checkbox 狀態
+                const checkbox = this.querySelector('input[type="checkbox"]');
+                if (e.target !== checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                }
+                
+                // 切換樣式
+                if (checkbox.checked) {
+                    this.classList.add('selected');
+                } else {
+                    this.classList.remove('selected');
+                }
+
+                updateSelectedCount();
+            });
+        });
+
+        // 全選/取消全選邏輯
+        const checkAll = document.getElementById('check-all');
+        checkAll.addEventListener('change', function() {
+            const isChecked = this.checked;
+            listItems.forEach(item => {
+                const cb = item.querySelector('input[type="checkbox"]');
+                cb.checked = isChecked;
+                if (isChecked) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+            updateSelectedCount();
+        });
+    </script>
+</body>
+</html>
