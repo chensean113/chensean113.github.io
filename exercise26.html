@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Image Styling Practice</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 900px;
+            background-color: #ffffff;
+            padding: 40px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* 左圖：圓角且不變形
+           使用 object-fit: cover 讓圖片填滿空間但保持比例 
+        */
+        .img-left {
+            width: 33%;
+            height: 300px;
+            border-radius: 18px;   /* 圓角 18px */
+            object-fit: cover;     /* No distortion (不變形) */
+        }
+
+        /* 中圖：正圓形且不變形
+           寬高設為 150px，border-radius 設為 50% (或 150px) 即可變成圓形
+        */
+        .img-center {
+            width: 150px;          /* 150px 寬 */
+            height: 150px;         /* 150px 高 */
+            border-radius: 50%;    /* border (radius) 150px -> 圓形 */
+            object-fit: cover;     /* No distortion (不變形) */
+            border: 2px solid #333; /* 加上設計稿中看起來有的一圈細框線 */
+        }
+
+        /* 右圖：強制拉伸變形
+           不設定 object-fit (預設為 fill)，或是明確設定 object-fit: fill; 
+        */
+        .img-right {
+            width: 33%;
+            height: 300px;         /* 高度固定 300px */
+            object-fit: fill;      /* Distortion (變形拉伸) - 這是預設行為 */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="image-container">
+        <!-- 左圖：圓角、不變形 -->
+        <img class="img-left" src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=600&q=80" alt="巴黎鐵塔 - 無變形">
+        
+        <!-- 中圖：圓形、不變形 -->
+        <img class="img-center" src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=600&q=80" alt="風景圖 - 圓形">
+        
+        <!-- 右圖：變形 -->
+        <img class="img-right" src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=600&q=80" alt="巴黎鐵塔 - 變形">
+    </div>
+
+</body>
+</html>
