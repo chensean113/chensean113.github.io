@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Layout - Mobile First</title>
+    <style>
+        /* --- 全局與背景設定 --- */
+        body {
+            background-color: #4faeed; /* 藍色背景 */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* --- 白色主容器 --- */
+        .container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 600px;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px; /* 統一設定所有區塊的間距 */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* 讓所有內部區塊都有圓角 */
+        .container > div > div, .header {
+            border-radius: 4px;
+        }
+
+        /* 1. 頂部綠色區塊 (固定樣式) */
+        .header {
+            background-color: #a0ce4e;
+            height: 120px;
+            width: 100%;
+        }
+
+        /* ==========================================
+           【預設樣式：手機版 (小於 480px) - 圖片 (a)】
+           ========================================== */
+        
+        /* 2. 中間藍色區塊：預設為直排 1 欄 */
+        .middle-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        .middle-section div {
+            background-color: #00bcd4;
+            height: 50px;
+        }
+
+        /* 3. 底部灰色區塊：預設為 2x2 網格 */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .bottom-section div {
+            background-color: #e8eaed;
+            height: 50px;
+        }
+
+        /* ==========================================
+           【Media Query：大螢幕 (大於等於 480px) - 圖片 (b)】
+           ========================================== */
+        @media (min-width: 480px) {
+            
+            /* 中間藍色區塊變為 3 欄，並增加高度 */
+            .middle-section {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .middle-section div {
+                height: 140px;
+            }
+
+            /* 底部灰色區塊變為 4 欄 */
+            .bottom-section {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 頂部區塊 -->
+        <div class="header"></div>
+
+        <!-- 中間區塊 -->
+        <div class="middle-section">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+
+        <!-- 底部區塊 -->
+        <div class="bottom-section">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Layout - Mobile First</title>
+    <style>
+        /* --- 全局與背景設定 --- */
+        body {
+            background-color: #4faeed; /* 藍色背景 */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* --- 白色主容器 --- */
+        .container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 600px;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px; /* 統一設定所有區塊的間距 */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* 讓所有內部區塊都有圓角 */
+        .container > div > div, .header {
+            border-radius: 4px;
+        }
+
+        /* 1. 頂部綠色區塊 (固定樣式) */
+        .header {
+            background-color: #a0ce4e;
+            height: 120px;
+            width: 100%;
+        }
+
+        /* ==========================================
+           【預設樣式：手機版 (小於 480px) - 圖片 (a)】
+           ========================================== */
+        
+        /* 2. 中間藍色區塊：預設為直排 1 欄 */
+        .middle-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        .middle-section div {
+            background-color: #00bcd4;
+            height: 50px;
+        }
+
+        /* 3. 底部灰色區塊：預設為 2x2 網格 */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .bottom-section div {
+            background-color: #e8eaed;
+            height: 50px;
+        }
+
+        /* ==========================================
+           【Media Query：大螢幕 (大於等於 480px) - 圖片 (b)】
+           ========================================== */
+        @media (min-width: 480px) {
+            
+            /* 中間藍色區塊變為 3 欄，並增加高度 */
+            .middle-section {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .middle-section div {
+                height: 140px;
+            }
+
+            /* 底部灰色區塊變為 4 欄 */
+            .bottom-section {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 頂部區塊 -->
+        <div class="header"></div>
+
+        <!-- 中間區塊 -->
+        <div class="middle-section">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+
+        <!-- 底部區塊 -->
+        <div class="bottom-section">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+</body>
+</html>
