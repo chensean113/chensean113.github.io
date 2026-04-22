@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My First Bootstrap Page</title>
+    
+    <!-- 引入 Bootstrap 3 CSS CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <style>
+        /* 為了讓視覺效果跟圖片一樣，給整個網頁加上灰底，並讓 container 變成一張白色的卡片 */
+        body {
+            background-color: #f8f9fa;
+            padding: 40px 20px;
+        }
+
+        .container.custom-card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* 稍微調整每個區塊的下方間距 */
+        .form-group, .alert {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. A <div> with class="container" -->
+    <div class="container custom-card">
+        
+        <!-- 2. A <div> with class="jumbotron" -->
+        <div class="jumbotron">
+            <h1>My First Bootstrap Page</h1>
+        </div>
+
+        <!-- 3. A <input> with type="text", class="form-control" -->
+        <div class="form-group">
+            <label>Input:</label>
+            <input type="text" class="form-control">
+        </div>
+
+        <!-- 4. A <div> with class="alert alert-success" -->
+        <div class="alert alert-success">
+            Successful alert
+        </div>
+
+        <!-- 5. 按鈕與 Badge -->
+        <div>
+            <!-- A <button> with class="btn btn-default" -->
+            <button type="button" class="btn btn-default">Button</button>
+            
+            <!-- A <span> with class="badge" -->
+            <span class="badge">badge</span>
+        </div>
+
+    </div>
+
+</body>
+</html>
