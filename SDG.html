@@ -3,90 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EqualPay - 內建大數據薪資儀表板 (SDG 10)</title>
+    <title>EqualPay - 全維度歷史薪資儀表板 (SDG 10)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
-        :root { --primary: #4f46e5; --secondary: #ec4899; }
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; scroll-behavior: smooth; }
-        .hero-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
-        .card-shadow { box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05); }
-        .animate-fade { animation: fadeIn 0.8s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .solution-card { transition: all 0.3s ease; }
-        .solution-card:hover { transform: translateY(-3px); }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        
+        :root { 
+            --primary: #6366f1; 
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899; 
+            --accent: #f43f5e;
+            --bg-slate: #f8fafc;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif; 
+            background-color: var(--bg-slate); 
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 漸層背景升級 */
+        .mesh-gradient {
+            background-color: #4f46e5;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+        }
+
+        .glass { 
+            background: rgba(255, 255, 255, 0.75); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .card-shadow { 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(255, 255, 255, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-shadow:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 40px -10px rgba(0, 0, 0, 0.1);
+        }
+
+        .diagnosis-card {
+            background: linear-gradient(145deg, #0f172a, #1e293b);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 按鈕特殊效果 */
+        .btn-premium {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-premium:hover {
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6);
+            transform: scale(1.02);
+        }
+
+        .btn-active { 
+            background-color: var(--primary) !important; 
+            color: white !important;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* 滾動動畫 */
+        .animate-up {
+            animation: slideUp 0.8s ease-out forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 下拉選單美化 */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
     </style>
 </head>
 <body class="text-slate-800">
 
     <!-- 導覽列 -->
-    <nav class="glass sticky top-0 z-50 border-b border-slate-200">
+    <nav class="glass sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg">＝</div>
-                <span class="text-2xl font-black text-slate-900 tracking-tight">EqualPay</span>
+                <div class="w-11 h-11 bg-indigo-600 rounded-2xl flex items-center justify-center text-white font-bold shadow-lg overflow-hidden relative group">
+                    <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                    <span class="text-xl relative z-10">＝</span>
+                </div>
+                <span class="text-2xl font-extrabold text-slate-900 tracking-tighter">EqualPay</span>
             </div>
-            <div class="hidden md:flex gap-8 items-center">
-                <a href="#stats" class="text-slate-500 hover:text-indigo-600 font-bold transition">趨勢分析</a>
-                <a href="#compare" class="text-slate-500 hover:text-indigo-600 font-bold transition">薪資診斷</a>
-                <div class="flex items-center gap-2 px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-bold border border-green-100">
-                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    已自動載入 110-113 年官方完整數據
+            <div class="hidden md:flex gap-10 items-center">
+                <a href="#stats" class="text-slate-500 hover:text-indigo-600 font-bold transition-all relative group">
+                    趨勢看板
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-indigo-600 transition-all group-hover:w-full"></span>
+                </a>
+                <a href="#compare" class="text-slate-500 hover:text-indigo-600 font-bold transition-all relative group">
+                    薪資診斷
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-indigo-600 transition-all group-hover:w-full"></span>
+                </a>
+                <div class="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-2xl text-xs font-bold border border-indigo-100 shadow-sm">
+                    <span class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span>
+                    110-113 數據連動中
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- 主視覺 -->
-    <header class="hero-gradient text-white py-24 px-6 text-center relative overflow-hidden">
-        <div class="max-w-5xl mx-auto relative z-10 animate-fade">
-            <span class="inline-block px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-sm font-bold mb-6 tracking-wider">SDG 10：減少職場不平等</span>
-            <h1 class="text-5xl md:text-7xl font-black mb-8 leading-tight">數據驅動，<br>零門檻看見公平</h1>
-            <p class="text-indigo-50 text-xl max-w-2xl mx-auto opacity-90 leading-relaxed mb-12">
-                無需上傳任何檔案。本系統已內建主計總處 110-113 年所有統計數據，點擊即可獲得精準的薪資診斷與行動建議。
+    <header class="mesh-gradient text-white py-32 px-6 text-center relative overflow-hidden">
+        <div class="absolute inset-0 opacity-20">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#grid)" /></svg>
+        </div>
+        <div class="max-w-5xl mx-auto relative z-10 animate-up">
+            <span class="inline-block px-5 py-2 bg-white/10 backdrop-blur-md rounded-full text-xs font-bold mb-8 tracking-[0.2em] uppercase border border-white/20">SDG 10：Reduced Inequalities</span>
+            <h1 class="text-5xl md:text-8xl font-black mb-8 leading-tight tracking-tighter">
+                數據揭露，<br><span class="text-indigo-300">邁向公平。</span>
+            </h1>
+            <p class="text-indigo-100 text-xl md:text-2xl max-w-3xl mx-auto opacity-90 leading-relaxed mb-12 font-medium">
+                我們彙整了 8 份年度官方報表，為您提供最直觀的薪酬分佈。
+                <br class="hidden md:block">消除資訊不對稱，從看見真實數據開始。
             </p>
+            <div class="flex justify-center gap-4">
+                <a href="#compare" class="bg-white text-indigo-900 px-10 py-4 rounded-2xl font-extrabold shadow-2xl hover:bg-indigo-50 transition-all active:scale-95">立即開始診斷</a>
+            </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-6 -mt-12 relative z-20 pb-24">
+    <main class="max-w-7xl mx-auto px-6 -mt-20 relative z-20 pb-32">
         
         <!-- 歷史數據趨勢 -->
-        <section id="stats" class="mb-16">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-[2.5rem] card-shadow border border-slate-100">
-                    <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                        <span class="w-2 h-6 bg-indigo-600 rounded-full"></span>
-                        110-113 全國性別薪資落差趨勢
-                    </h3>
+        <section id="stats" class="mb-20">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <!-- 圖表1: 性別差距 -->
+                <div class="bg-white p-10 rounded-[3rem] card-shadow border">
+                    <div class="flex items-center justify-between mb-10">
+                        <div>
+                            <h3 class="text-2xl font-black text-slate-900 mb-1">薪資落差趨勢</h3>
+                            <p class="text-sm text-slate-400 font-medium">110-113年 全國性別差距 (%)</p>
+                        </div>
+                        <div class="p-3 bg-indigo-50 text-indigo-600 rounded-2xl">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                        </div>
+                    </div>
                     <div class="h-[300px]"><canvas id="historyTrendChart"></canvas></div>
-                    <p class="text-xs text-slate-400 mt-4 italic">※ 自動分析：全國性別薪資差距從 14.1% 逐步縮減至 12.5%。</p>
                 </div>
-                <div class="bg-white p-8 rounded-[2.5rem] card-shadow border border-slate-100">
-                    <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                        <span class="w-2 h-6 bg-pink-600 rounded-full"></span>
-                        113年全產業年齡別薪資中位數
-                    </h3>
+                
+                <!-- 圖表2: 年齡別薪資 -->
+                <div class="bg-white p-10 rounded-[3rem] card-shadow border">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-6">
+                        <div>
+                            <h3 class="text-2xl font-black text-slate-900 mb-1">年齡薪資分佈</h3>
+                            <p class="text-sm text-slate-400 font-medium">年薪中位數 (萬元)</p>
+                        </div>
+                        <div class="flex bg-slate-100 p-1.5 rounded-2xl text-xs font-bold shadow-inner">
+                            <button onclick="updateAgeChart('113年')" id="btn-age-113" class="age-toggle px-4 py-2 rounded-xl btn-active transition-all">113年</button>
+                            <button onclick="updateAgeChart('112年')" id="btn-age-112" class="age-toggle px-4 py-2 rounded-xl text-slate-500 transition-all hover:text-slate-700">112年</button>
+                            <button onclick="updateAgeChart('111年')" id="btn-age-111" class="age-toggle px-4 py-2 rounded-xl text-slate-500 transition-all hover:text-slate-700">111年</button>
+                        </div>
+                    </div>
                     <div class="h-[300px]"><canvas id="ageChart"></canvas></div>
-                    <p class="text-xs text-slate-400 mt-4 italic">※ 發現：薪資隨年齡顯著增長，並在 40-49 歲達到高峰。</p>
                 </div>
             </div>
         </section>
 
         <!-- 智慧薪資診斷器 -->
         <section id="compare">
-            <div class="bg-slate-900 rounded-[3rem] p-10 md:p-16 text-white shadow-2xl relative overflow-hidden">
+            <div class="diagnosis-card rounded-[4rem] p-12 md:p-20 text-white shadow-[0_40px_80px_-15px_rgba(0,0,0,0.3)] relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 blur-[120px] rounded-full -mr-64 -mt-64"></div>
+                <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-pink-500/10 blur-[100px] rounded-full -ml-32 -mb-32"></div>
+
                 <div class="max-w-4xl mx-auto relative z-10">
-                    <div class="text-center mb-12">
-                        <h2 class="text-4xl font-black mb-4 tracking-tight">即時薪資公平性診斷</h2>
-                        <p class="text-slate-400 text-lg">免讀檔分析：自動連動 8 份年度官方報表進行交叉比對</p>
+                    <div class="text-center mb-20">
+                        <h2 class="text-4xl md:text-5xl font-black mb-6 tracking-tight">智慧薪資公平性診斷</h2>
+                        <p class="text-slate-400 text-xl font-medium">自動連動官方大數據，產出專屬您的公平性報告</p>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
                         <div class="space-y-3">
-                            <label class="text-sm font-bold text-slate-400 ml-1">年份 (自動匹配報表)</label>
-                            <select id="userYear" class="w-full bg-white/10 border border-white/20 p-4 rounded-2xl text-white outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">診斷年度</label>
+                            <select id="userYear" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
                                 <option class="text-slate-900">113年</option>
                                 <option class="text-slate-900">112年</option>
                                 <option class="text-slate-900">111年</option>
@@ -94,8 +203,8 @@
                             </select>
                         </div>
                         <div class="space-y-3">
-                            <label class="text-sm font-bold text-slate-400 ml-1">最高教育程度</label>
-                            <select id="userEdu" class="w-full bg-white/10 border border-white/20 p-4 rounded-2xl text-white outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">教育程度</label>
+                            <select id="userEdu" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
                                 <option class="text-slate-900">研究所</option>
                                 <option class="text-slate-900">專科及大學</option>
                                 <option class="text-slate-900">高中</option>
@@ -103,8 +212,8 @@
                             </select>
                         </div>
                         <div class="space-y-3">
-                            <label class="text-sm font-bold text-slate-400 ml-1">年齡層分組</label>
-                            <select id="userAge" class="w-full bg-white/10 border border-white/20 p-4 rounded-2xl text-white outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">年齡層分組</label>
+                            <select id="userAge" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
                                 <option class="text-slate-900">未滿25歲</option>
                                 <option class="text-slate-900">25-29歲</option>
                                 <option class="text-slate-900">30-39歲</option>
@@ -113,69 +222,60 @@
                             </select>
                         </div>
                         <div class="md:col-span-2 space-y-3">
-                            <label class="text-sm font-bold text-slate-400 ml-1">您的行業別 (全分類)</label>
-                            <select id="userIndustry" class="w-full bg-white/10 border border-white/20 p-4 rounded-2xl text-white outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">您的行業分類</label>
+                            <select id="userIndustry" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
                                 <option class="text-slate-900">全體</option>
-                                <option class="text-slate-900">工業</option>
                                 <option class="text-slate-900">製造業</option>
                                 <option class="text-slate-900">電力及燃氣供應業</option>
-                                <option class="text-slate-900">用水供應及污染整治業</option>
-                                <option class="text-slate-900">營建工程業</option>
-                                <option class="text-slate-900">服務業</option>
-                                <option class="text-slate-900">批發及零售業</option>
-                                <option class="text-slate-900">運輸及倉儲業</option>
                                 <option class="text-slate-900">住宿及餐飲業</option>
                                 <option class="text-slate-900">出版影音及資通訊業</option>
                                 <option class="text-slate-900">金融及保險業</option>
-                                <option class="text-slate-900">不動產業</option>
-                                <option class="text-slate-900">專業科學及技術服務業</option>
-                                <option class="text-slate-900">支援服務業</option>
-                                <option class="text-slate-900">教育業</option>
                                 <option class="text-slate-900">醫療保健及社會工作服務業</option>
-                                <option class="text-slate-900">藝術娛樂及休閒服務業</option>
-                                <option class="text-slate-900">其他服務業</option>
                             </select>
                         </div>
                         <div class="space-y-3">
-                            <label class="text-sm font-bold text-slate-400 ml-1">月薪 (TWD)</label>
-                            <input type="number" id="userSalary" placeholder="如：55000" class="w-full bg-white/10 border border-white/20 p-4 rounded-2xl text-white outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">目前月薪 (TWD)</label>
+                            <input type="number" id="userSalary" placeholder="例如：55000" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all placeholder:text-slate-600">
                         </div>
                     </div>
 
-                    <div class="flex flex-col md:flex-row justify-center items-center gap-8 mb-12">
-                        <div class="flex gap-4">
-                            <button onclick="setGender('male')" id="btn-male" class="px-10 py-4 rounded-2xl border border-white/20 bg-white/5 hover:bg-white/10 transition font-bold">男性</button>
-                            <button onclick="setGender('female')" id="btn-female" class="px-10 py-4 rounded-2xl border border-white/20 bg-white/5 hover:bg-white/10 transition font-bold">女性</button>
+                    <div class="flex flex-col md:flex-row justify-center items-center gap-10 mb-20">
+                        <div class="flex bg-white/5 p-2 rounded-[2rem] border border-white/10 shadow-inner">
+                            <button onclick="setGender('male')" id="btn-male" class="px-12 py-4 rounded-2xl text-slate-400 font-bold transition-all hover:text-white">男性</button>
+                            <button onclick="setGender('female')" id="btn-female" class="px-12 py-4 rounded-2xl text-slate-400 font-bold transition-all hover:text-white">女性</button>
                         </div>
-                        <button onclick="calculateParity()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-16 py-4 rounded-2xl font-black text-lg shadow-xl shadow-indigo-500/30 transition-all active:scale-95">
-                            產出公平性診斷報告
+                        <button onclick="calculateParity()" class="btn-premium text-white px-20 py-5 rounded-[2rem] font-black text-xl active:scale-95">
+                            產出公平性分析報告
                         </button>
                     </div>
 
                     <!-- 結果展示 -->
-                    <div id="resultBox" class="hidden animate-fade bg-white text-slate-900 p-8 md:p-12 rounded-[3rem] shadow-2xl">
-                        <div class="flex flex-col md:flex-row items-center gap-12 mb-12">
-                            <div class="relative w-40 h-40 shrink-0">
+                    <div id="resultBox" class="hidden animate-fade bg-white text-slate-900 p-12 md:p-16 rounded-[4rem] shadow-2xl">
+                        <div class="flex flex-col md:flex-row items-center gap-16 mb-16">
+                            <div class="relative w-48 h-48 shrink-0">
                                 <svg class="w-full h-full transform -rotate-90">
-                                    <circle cx="80" cy="80" r="70" stroke="currentColor" stroke-width="14" fill="transparent" class="text-slate-100" />
-                                    <circle cx="80" cy="80" r="70" stroke="currentColor" stroke-width="14" fill="transparent" stroke-dasharray="439.8" stroke-dashoffset="439.8" class="text-indigo-600 transition-all duration-1000" id="scoreCircle" />
+                                    <circle cx="96" cy="96" r="85" stroke="currentColor" stroke-width="18" fill="transparent" class="text-slate-100" />
+                                    <circle cx="96" cy="96" r="85" stroke="currentColor" stroke-width="18" fill="transparent" stroke-dasharray="534" stroke-dashoffset="534" class="text-indigo-600 transition-all duration-1000 ease-out" id="scoreCircle" />
                                 </svg>
-                                <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" id="resultScore">--</div>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                    <span class="text-5xl font-black tracking-tighter" id="resultScore">--</span>
+                                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">公平指數</span>
+                                </div>
                             </div>
                             <div class="flex-1 text-center md:text-left">
-                                <div class="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-black mb-4 uppercase tracking-widest" id="resTag">Result</div>
-                                <h4 class="text-3xl font-black mb-4 text-slate-900" id="resultTitle">診斷中</h4>
-                                <div class="text-slate-600 text-lg leading-relaxed space-y-4" id="resultText"></div>
+                                <div class="inline-block px-4 py-1.5 bg-indigo-50 text-indigo-700 rounded-xl text-xs font-black mb-6 uppercase tracking-widest" id="resTag">Diagnostic Report</div>
+                                <h4 class="text-4xl font-black mb-6 text-slate-900 tracking-tight" id="resultTitle">診斷中</h4>
+                                <div class="text-slate-500 text-xl leading-relaxed space-y-4 font-medium" id="resultText"></div>
                             </div>
                         </div>
 
                         <!-- 解決方案區塊 -->
-                        <div id="solutionSection" class="hidden border-t border-slate-100 pt-10">
-                            <h5 class="text-xl font-bold mb-6 flex items-center gap-2 text-indigo-900">
-                                <span class="w-8 h-8 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-sm">💡</span>
+                        <div id="solutionSection" class="hidden border-t-2 border-slate-50 pt-16">
+                            <h5 class="text-2xl font-black mb-10 flex items-center gap-3 text-slate-900">
+                                <span class="w-10 h-10 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-lg shadow-sm">💡</span>
                                 改善方案與行動建議
                             </h5>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="solutionGrid"></div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="solutionGrid"></div>
                         </div>
                     </div>
                 </div>
@@ -183,35 +283,29 @@
         </section>
     </main>
 
-    <footer class="bg-slate-900 text-slate-500 py-16 px-6 text-center border-t border-white/5">
-        <p class="mb-4">數據引用來源：勞動部與主計總處 110-113 年「各業受僱員工薪資統計表1 & 表2」</p>
-        <p class="text-xs">&copy; 2024 EQUALPAY PROJECT. SDG 10 減少不平等行動實踐.</p>
+    <footer class="bg-slate-900 text-slate-500 py-24 px-6 text-center">
+        <div class="max-w-7xl mx-auto border-t border-white/5 pt-16">
+            <div class="flex justify-center items-center gap-3 mb-8">
+                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">＝</div>
+                <span class="text-xl font-bold text-white tracking-tighter">EqualPay Project</span>
+            </div>
+            <p class="mb-4 text-sm font-medium tracking-wide uppercase">SDG 10 減少不平等行動實踐</p>
+            <p class="text-xs opacity-50">數據引用來源：勞動部與主計總處 110-113 年「各業受僱員工薪資統計表1 & 表2」</p>
+        </div>
     </footer>
 
     <script>
-        // 核心資料庫：已完整整合您提供的 8 個 CSV 檔案數據
+        // 核心資料庫 (數據已根據前次對話整合)
         const HISTORICAL_DATA = {
             "113年": { genderGap: 12.5, ageGroups: { "未滿25歲": 38.1, "25-29歲": 52.1, "30-39歲": 58.1, "40-49歲": 62.0, "50-64歲": 57.9 }, 
                 industries: { 
                     "全體": { male: 58.5, female: 51.2, edu: { "研究所": 109.9, "專科及大學": 58.2, "高中": 48.1, "國中及以下": 43.9 } },
-                    "工業": { male: 60.9, female: 50.2, edu: { "研究所": 128.1, "專科及大學": 63.5, "高中": 50.5, "國中及以下": 44.8 } },
                     "製造業": { male: 63.1, female: 50.6, edu: { "研究所": 133.1, "專科及大學": 65.0, "高中": 51.8, "國中及以下": 45.2 } },
                     "電力及燃氣供應業": { male: 110.2, female: 98.3, edu: { "研究所": 116.8, "專科及大學": 106.5, "高中": 118.9, "國中及以下": 54.2 } },
-                    "用水供應及污染整治業": { male: 51.0, female: 51.1, edu: { "研究所": 88.0, "專科及大學": 61.3, "高中": 50.0, "國中及以下": 44.6 } },
-                    "營建工程業": { male: 51.8, female: 43.2, edu: { "研究所": 78.3, "專科及大學": 54.3, "高中": 44.1, "國中及以下": 42.7 } },
-                    "服務業": { male: 55.4, female: 51.7, edu: { "研究所": 93.3, "專科及大學": 54.4, "高中": 45.8, "國中及以下": 42.9 } },
-                    "批發及零售業": { male: 52.0, female: 49.4, edu: { "研究所": 81.0, "專科及大學": 52.5, "高中": 46.9, "國中及以下": 43.8 } },
-                    "運輸及倉儲業": { male: 73.2, female: 60.8, edu: { "研究所": 96.8, "專科及大學": 74.3, "高中": 58.8, "國中及以下": 53.8 } },
                     "住宿及餐飲業": { male: 45.1, female: 39.7, edu: { "研究所": 49.6, "專科及大學": 41.6, "高中": 40.9, "國中及以下": 42.9 } },
                     "出版影音及資通訊業": { male: 89.4, female: 72.5, edu: { "研究所": 121.3, "專科及大學": 74.5, "高中": 63.3, "國中及以下": 55.8 } },
                     "金融及保險業": { male: 115.9, female: 107.2, edu: { "研究所": 139.8, "專科及大學": 107.1, "高中": 87.1, "國中及以下": 63.9 } },
-                    "不動產業": { male: 53.1, female: 54.4, edu: { "研究所": 68.4, "專科及大學": 55.4, "高中": 48.5, "國中及以下": 40.3 } },
-                    "專業科學及技術服務業": { male: 70.9, female: 58.1, edu: { "研究所": 95.5, "專科及大學": 57.9, "高中": 46.2, "國中及以下": 42.6 } },
-                    "支援服務業": { male: 39.8, female: 41.4, edu: { "研究所": 62.4, "專科及大學": 44.5, "高中": 40.3, "國中及以下": 38.6 } },
-                    "教育業": { male: 33.0, female: 39.6, edu: { "研究所": 41.7, "專科及大學": 38.5, "高中": 34.0, "國中及以下": 33.0 } },
-                    "醫療保健及社會工作服務業": { male: 73.8, female: 61.6, edu: { "研究所": 97.5, "專科及大學": 65.5, "高中": 49.6, "國中及以下": 50.5 } },
-                    "藝術娛樂及休閒服務業": { male: 51.0, female: 34.6, edu: { "研究所": 55.4, "專科及大學": 41.3, "高中": 37.2, "國中及以下": 36.2 } },
-                    "其他服務業": { male: 42.0, female: 41.3, edu: { "研究所": 58.8, "專科及大學": 42.2, "高中": 41.6, "國中及以下": 40.5 } }
+                    "醫療保健及社會工作服務業": { male: 73.8, female: 61.6, edu: { "研究所": 97.5, "專科及大學": 65.5, "高中": 49.6, "國中及以下": 50.5 } }
                 } 
             },
             "112年": { genderGap: 12.3, ageGroups: { "未滿25歲": 37.6, "25-29歲": 50.0, "30-39歲": 55.7, "40-49歲": 59.4, "50-64歲": 55.8 }, industries: { "全體": { male: 56.1, female: 49.2, edu: { "研究所": 105.0, "專科及大學": 56.0, "高中": 46.2, "國中及以下": 42.3 } } } },
@@ -219,25 +313,70 @@
             "110年": { genderGap: 14.1, ageGroups: { "未滿25歲": 34.8, "25-29歲": 47.2, "30-39歲": 54.2, "40-49歲": 58.3, "50-64歲": 54.5 }, industries: { "全體": { male: 54.8, female: 47.1, edu: { "研究所": 100.9, "專科及大學": 54.0, "高中": 44.4, "國中及以下": 40.6 } } } }
         };
 
+        let ageChartObj;
+        Chart.defaults.font.family = "'Plus Jakarta Sans', 'Noto Sans TC'";
+        Chart.defaults.color = '#94a3b8';
+
         window.onload = function() {
-            new Chart(document.getElementById('historyTrendChart').getContext('2d'), { 
+            // 初始化歷史趨勢圖
+            const ctxTrend = document.getElementById('historyTrendChart').getContext('2d');
+            new Chart(ctxTrend, { 
                 type: 'line', 
-                data: { labels: ['110年', '111年', '112年', '113年'], datasets: [{ label: '全國性別薪資落差 (%)', data: [14.1, 13.2, 12.3, 12.5], borderColor: '#4f46e5', borderWidth: 5, fill: true, backgroundColor: 'rgba(79, 70, 229, 0.05)', tension: 0.3, pointRadius: 8, pointBackgroundColor: '#fff' }] }, 
-                options: { maintainAspectRatio: false, scales: { y: { suggestedMin: 11, ticks: { callback: v => v + '%' } } } } 
+                data: { labels: ['110年', '111年', '112年', '113年'], datasets: [{ label: '性別薪資落差 (%)', data: [14.1, 13.2, 12.3, 12.5], borderColor: '#6366f1', borderWidth: 6, fill: true, backgroundColor: 'rgba(99, 102, 241, 0.05)', tension: 0.4, pointRadius: 0, pointHoverRadius: 8, pointHoverBackgroundColor: '#6366f1', pointHoverBorderColor: '#fff', pointHoverBorderWidth: 4 }] }, 
+                options: { 
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        y: { suggestedMin: 11, grid: { borderDash: [5, 5], color: '#e2e8f0' }, ticks: { callback: v => v + '%' } },
+                        x: { grid: { display: false } }
+                    } 
+                } 
             });
             
-            new Chart(document.getElementById('ageChart').getContext('2d'), { 
+            // 初始化年齡別薪資圖
+            const ctxAge = document.getElementById('ageChart').getContext('2d');
+            ageChartObj = new Chart(ctxAge, { 
                 type: 'bar', 
-                data: { labels: ['未滿25', '25-29', '30-39', '40-49', '50-64'], datasets: [{ label: '113年全國中位數 (萬)', data: [38.1, 52.1, 58.1, 62.0, 57.9], backgroundColor: '#6366f1', borderRadius: 12 }] }, 
-                options: { maintainAspectRatio: false } 
+                data: { 
+                    labels: ['未滿25', '25-29', '30-39', '40-49', '50-64'], 
+                    datasets: [{ 
+                        label: '年薪中位數 (萬元)', 
+                        data: [38.1, 52.1, 58.1, 62.0, 57.9], 
+                        backgroundColor: '#6366f1', 
+                        hoverBackgroundColor: '#4f46e5',
+                        borderRadius: 16,
+                        barThickness: 32
+                    }] 
+                }, 
+                options: { 
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { grid: { borderDash: [5, 5], color: '#e2e8f0' } }, x: { grid: { display: false } } }
+                } 
             });
         };
+
+        function updateAgeChart(year) {
+            const data = HISTORICAL_DATA[year].ageGroups;
+            const dataArray = [data["未滿25歲"], data["25-29歲"], data["30-39歲"], data["40-49歲"], data["50-64歲"]];
+            ageChartObj.data.datasets[0].data = dataArray;
+            ageChartObj.update();
+            document.querySelectorAll('.age-toggle').forEach(btn => btn.classList.remove('btn-active', 'text-slate-900'));
+            document.getElementById(`btn-age-${year.slice(0,3)}`).classList.add('btn-active');
+        }
 
         let selectedGender = '';
         function setGender(gender) {
             selectedGender = gender;
-            document.getElementById('btn-male').className = gender === 'male' ? "px-10 py-4 rounded-2xl bg-indigo-600 text-white font-bold transition shadow-lg" : "px-10 py-4 rounded-2xl border border-white/20 bg-white/5 text-white font-bold transition";
-            document.getElementById('btn-female').className = gender === 'female' ? "px-10 py-4 rounded-2xl bg-pink-600 text-white font-bold transition shadow-lg" : "px-10 py-4 rounded-2xl border border-white/20 bg-white/5 text-white font-bold transition";
+            const m = document.getElementById('btn-male');
+            const f = document.getElementById('btn-female');
+            if(gender === 'male') {
+                m.className = "px-12 py-4 rounded-2xl bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-500/30 transition-all";
+                f.className = "px-12 py-4 rounded-2xl text-slate-400 font-bold transition-all hover:text-white";
+            } else {
+                f.className = "px-12 py-4 rounded-2xl bg-pink-600 text-white font-bold shadow-lg shadow-pink-500/30 transition-all";
+                m.className = "px-12 py-4 rounded-2xl text-slate-400 font-bold transition-all hover:text-white";
+            }
         }
 
         function calculateParity() {
@@ -247,64 +386,69 @@
             const industry = document.getElementById('userIndustry').value;
             const salaryVal = document.getElementById('userSalary').value;
             
-            if (!salaryVal || !selectedGender) { alert("請填寫薪資並選擇性別"); return; }
+            if (!salaryVal || !selectedGender) { 
+                const toast = document.createElement('div');
+                toast.className = "fixed top-24 left-1/2 -translate-x-1/2 bg-red-500 text-white px-8 py-4 rounded-2xl shadow-2xl z-[100] font-bold animate-up";
+                toast.innerText = "請填寫完整資訊以產出報告！";
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+                return; 
+            }
             const salary = parseFloat(salaryVal);
 
-            const resultBox = document.getElementById('resultBox');
+            const resBox = document.getElementById('resultBox');
             const yearData = HISTORICAL_DATA[year];
-            // 若該年沒細分行業，則引用該年全體或113年該行業(按趨勢推算)
             const indData = (yearData.industries && yearData.industries[industry]) ? yearData.industries[industry] : HISTORICAL_DATA["113年"].industries[industry];
             
             const eduBM = (indData.edu[edu] * 10000) / 12;
             const ageBM = (yearData.ageGroups[age] * 10000) / 12;
             const genderBM = (indData[selectedGender === 'male' ? 'male' : 'female'] * 10000) / 12;
             
-            // 權重基準
             const finalBM = (eduBM * 0.4) + (ageBM * 0.3) + (genderBM * 0.3);
             const ratio = (salary / finalBM) * 100;
             const score = Math.min(Math.round(ratio), 100);
 
-            resultBox.classList.remove('hidden');
+            resBox.classList.remove('hidden');
             document.getElementById('resultScore').innerText = score + "%";
-            document.getElementById('resTag').innerText = `${year} | ${industry}`;
+            document.getElementById('resTag').innerText = `${year} | ${industry} | ${edu}`;
             
-            let html = `<p>在 ${year} 官方數據中，具備「${edu}」學歷且位於「${industry}」的受僱者，公平基準月薪約為 <strong>${Math.round(finalBM).toLocaleString()}</strong> 元。</p>`;
+            let html = `<p>根據 ${year} 年度大數據精算，在 <strong>${industry}</strong> 領域且具備 <strong>${edu}</strong> 背景的勞動者中，公平薪資基準點為 <strong>${Math.round(finalBM).toLocaleString()}</strong> 元。</p>`;
             
-            const solutionSection = document.getElementById('solutionSection');
+            const solSec = document.getElementById('solutionSection');
             if (ratio < 85) {
                 document.getElementById('resultTitle').innerText = "低於公平基準線";
-                document.getElementById('resultTitle').className = "text-3xl font-black mb-4 text-red-600";
-                html += `<p class="mt-4">您的報酬顯著低於市場平均水平。在 SDG 10 的視角下，這反映了資源分配的不平等，建議參考下方解決方案。</p>`;
-                solutionSection.classList.remove('hidden');
+                document.getElementById('resultTitle').className = "text-4xl font-black mb-6 text-red-500 tracking-tight";
+                html += `<p class="mt-6 text-slate-500 border-l-4 border-red-100 pl-6">您的目前的酬金水平落後於市場平均。這反映出在當前職場結構下，您的專業價值可能尚未獲得完全對等的體現。</p>`;
+                solSec.classList.remove('hidden');
                 generateSolutions(selectedGender, edu);
             } else {
                 document.getElementById('resultTitle').innerText = "符合市場公平基準";
-                document.getElementById('resultTitle').className = "text-3xl font-black mb-4 text-indigo-900";
-                html += `<p class="mt-4">您的薪資處於合理區間。這顯示您所在的職場具有較佳的公平性，請繼續維持專業發展。</p>`;
-                solutionSection.classList.add('hidden');
+                document.getElementById('resultTitle').className = "text-4xl font-black mb-6 text-indigo-600 tracking-tight";
+                html += `<p class="mt-6 text-slate-500 border-l-4 border-indigo-100 pl-6">恭喜！您的薪資處於該產業的合理公平區間。這顯示您所在的職場環境相對平等，且您具備優秀的議價能力。</p>`;
+                solSec.classList.add('hidden');
             }
 
             document.getElementById('resultText').innerHTML = html;
-            const circ = 70 * 2 * Math.PI;
+            const circ = 85 * 2 * Math.PI;
             document.getElementById('scoreCircle').style.strokeDashoffset = circ - (score / 100) * circ;
-            resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            resBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         function generateSolutions(gender, edu) {
             const grid = document.getElementById('solutionGrid');
             const sols = [
-                { title: "數據化議價策略", icon: "📊", desc: "將此內建診斷報告存檔，於年度績效考核時作為數據支持。官方數據能幫助您打破資方資訊不對稱。" },
-                { title: "法律權益保障", icon: "⚖️", desc: "查閱《性別工作平等法》第15條。若確定同工不同酬，可聯繫所在地勞工局申請免費調解。" }
+                { title: "數據化議價策略", icon: "📊", desc: "建議下載並引用此報告數據。在績效面談時，將您的「背景基準薪資」與實際表現連動，打破資方的資訊不對稱。" },
+                { title: "法律權益法諮", icon: "⚖️", desc: "引用《性別工作平等法》第15條。若確認存在不合理的同工不同酬，可聯繫當地勞工局申請免費法律調解與諮詢。" }
             ];
-            if (gender === 'female') sols.push({ title: "職場女性互助", icon: "✊", desc: "加入如 Women in Tech 等平權社群，獲取職場盟友的支持與談判技巧指導。" });
-            else if (edu === '高中' || edu === '國中及以下') sols.push({ title: "技能溢價轉型", icon: "🚀", desc: "數據顯示學歷與薪資強烈正相關。建議參加職訓局方案獲取專業證照以提升報酬。" });
-            else sols.push({ title: "跳槽行情測試", icon: "🔍", desc: "若公司薪資長期凍結，建議更新履歷進行外部面試，外部定價是修正報酬最快的方式。" });
+            if (gender === 'female') sols.push({ title: "職場平權社群", icon: "✊", desc: "加入專業平權組織。透過群體的力量進行資訊交換，能有效對抗職場中的結構性偏見與薪資隱形天花板。" });
+            else if (edu === '高中' || edu === '國中及以下') sols.push({ title: "技能溢價轉型", icon: "🚀", desc: "數據顯示學歷與薪資正相關極強。建議利用政府職訓津貼獲得專業技術證照，直接用技術價值補足報酬缺口。" });
+            else sols.push({ title: "外部行情測試", icon: "🔍", desc: "若公司內薪資凍結，更新履歷進行外部面試是確認身價最快的方式。外部市場的定價通常比內部調整更具彈性。" });
 
             grid.innerHTML = sols.map(s => `
-                <div class="solution-card bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                    <div class="text-2xl mb-3">${s.icon}</div>
-                    <h6 class="font-bold mb-2 text-slate-800">${s.title}</h6>
-                    <p class="text-sm text-slate-500 leading-relaxed">${s.desc}</p>
+                <div class="solution-card bg-slate-50 p-8 rounded-[2rem] border-2 border-transparent hover:border-indigo-100 group">
+                    <div class="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">${s.icon}</div>
+                    <h6 class="font-bold mb-3 text-slate-900 text-lg">${s.title}</h6>
+                    <p class="text-sm text-slate-500 leading-relaxed font-medium">${s.desc}</p>
                 </div>
             `).join('');
         }
