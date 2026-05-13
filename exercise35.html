@@ -1,1 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>陳昱翔</title>
+  <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; background-color: #f4f4f9; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h2 { color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        pre { background: #272822; color: #f8f8f2; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .highlight { color: #e6db74; font-weight: bold; }
+    </style>
+</head>
+<body>
 
+<div class="container">
+    <h2>1. 原始物件的所有屬性名稱</h2>
+    <p id="all-props"></p>
+
+    <h2>2. 刪除 age 屬性後的物件內容</h2>
+    <pre id="result-object"></pre>
+</div>
+
+<script>
+    // 定義範例物件 [cite: 52]
+    var Person = {
+        firstName : "Tony",
+        lastName  : "Lee",
+        age       : 50,
+        eyeColor  : "Blue"
+    };
+
+    // 1. 列出所有屬性 (使用 for...in 迴圈) [cite: 181, 194]
+    let propList = [];
+    for (let x in Person) {
+        propList.push(x); // 將屬性名稱存入陣列 [cite: 56]
+    }
+    document.getElementById("demo1").innerHTML = "屬性清單: " + propList.join(", ");
+
+    // 2. 刪除 age 屬性 [cite: 206, 214]
+    delete Person.age;
+
+    // 3. 列印刪除後的物件 (使用 JSON 格式化方便閱讀)
+    document.getElementById("result-object").innerHTML = JSON.stringify(Person, null, 4);
+</script>
+
+</body>
+</html>
