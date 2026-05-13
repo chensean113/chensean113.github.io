@@ -11,7 +11,7 @@
     <p id="displayObject"></p>
 
     <script>
-        // 定義物件 [cite: 88]
+        
         var Person = {
             firstName : "Tony",
             lastName  : "Lee",
@@ -19,12 +19,12 @@
             eyeColor  : "Blue"
         };
 
-        // 1. 列出所有屬性名稱 [cite: 56, 188]
-        let props = [];
+        // 1. 列出所有屬性名稱 
+        
         for (let x in Person) {
-            props.push(x);
+             txt += x + ": " + Person[x] + "<br>";
         }
-        document.getElementById("propList").innerHTML = "Properties: " + props.join(", ");
+        document.getElementById("propList").innerHTML = txt;
 
         // 2. 刪除 age 屬性 [cite: 206, 214]
         delete Person.age;
