@@ -2,25 +2,16 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>JavaScript Assignment</title>
-    <style>
-        body { font-family: monospace; padding: 20px; line-height: 1.5; background-color: #ffffff; }
-        pre { background: #f0f0f0; padding: 15px; border-radius: 5px; border: 1px solid #ccc; }
-        .section { margin-bottom: 30px; }
-    </style>
+    <title>陳昱翔</title>
+  
 </head>
 <body>
 
-    <div class="section">
-        <p id="propList"></p>
-    </div>
-
-    <div class="section">
-        <pre id="displayObject"></pre>
-    </div>
+    <p id="propList"></p>
+    <pre id="displayObject"></pre>
 
     <script>
-        // 定義範例物件 
+        // 定義物件 [cite: 47, 88]
         var Person = {
             firstName : "Tony",
             lastName  : "Lee",
@@ -28,17 +19,17 @@
             eyeColor  : "Blue"
         };
 
-        // 1. 列出所有屬性 (Properties) 
+        // 1. 列出所有屬性 ( menggunakan for...in 迴圈 ) [cite: 181, 183, 194]
         let props = [];
         for (let x in Person) {
             props.push(x);
         }
         document.getElementById("propList").innerHTML = "Properties: " + props.join(", ");
 
-        // 2. 刪除 age 屬性 
+        // 2. 刪除 age 屬性 [cite: 206, 214]
         delete Person.age;
 
-        // 3. 列印刪除後的物件 
+        // 3. 列印刪除後的物件 [cite: 307]
         document.getElementById("displayObject").innerHTML = JSON.stringify(Person, null, 4);
     </script>
 
