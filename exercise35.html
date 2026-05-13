@@ -8,10 +8,10 @@
 <body>
 
     <p id="propList"></p>
-    <pre id="displayObject"></pre>
+    <p id="displayObject"></p>
 
     <script>
-        // 定義物件 [cite: 47, 88]
+        // 定義物件 [cite: 88]
         var Person = {
             firstName : "Tony",
             lastName  : "Lee",
@@ -19,7 +19,7 @@
             eyeColor  : "Blue"
         };
 
-        // 1. 列出所有屬性 ( menggunakan for...in 迴圈 ) [cite: 181, 183, 194]
+        // 1. 列出所有屬性名稱 [cite: 56, 188]
         let props = [];
         for (let x in Person) {
             props.push(x);
@@ -29,8 +29,13 @@
         // 2. 刪除 age 屬性 [cite: 206, 214]
         delete Person.age;
 
-        // 3. 列印刪除後的物件 [cite: 307]
-        document.getElementById("displayObject").innerHTML = JSON.stringify(Person, null, 4);
+        // 3. 使用迴圈標示並列印刪除後的內容 [cite: 194, 196]
+        let txt = "After delete:<br>";
+        for (let x in Person) {
+            // 逐一串接剩下的屬性與數值 [cite: 196]
+            txt += x + ": " + Person[x] + "<br>";
+        }
+        document.getElementById("displayObject").innerHTML = txt;
     </script>
 
 </body>
