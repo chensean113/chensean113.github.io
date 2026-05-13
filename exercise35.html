@@ -20,7 +20,7 @@
         };
 
         // 1. 列出所有屬性名稱 
-        
+        let txt = "";
         for (let x in Person) {
              txt += x + ": " + Person[x] + "<br>";
         }
@@ -30,12 +30,12 @@
         delete Person.age;
 
         // 3. 使用迴圈標示並列印刪除後的內容 [cite: 194, 196]
-        let txt = "After delete:<br>";
+        let txt2 = "After delete:<br>";
         for (let x in Person) {
             // 逐一串接剩下的屬性與數值 [cite: 196]
-            txt += x + ": " + Person[x] + "<br>";
+            txt2 += x + ": " + Person[x] + "<br>";
         }
-        document.getElementById("displayObject").innerHTML = txt;
+        document.getElementById("displayObject").innerHTML = txt2;
     </script>
 
 </body>
